@@ -34,6 +34,17 @@ function App() {
     setToys((toys) => [...toys, newToy]);
   };
 
+  // Increase a toy's likes via PATCH, preserving toy order in state.
+  const handleLike = async (id, likes) => {
+    const res = await fetch(`${BASE_URL}/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ likes }),
+    });
+    const updatedToy = await res.json();
+    setToys((toys) => toys.map((toy) => (toy.id === id ? updatedToy : toy)));
+  };
+
   // Delete ("donate") a toy via DELETE, then remove it from state.
   const handleDelete = async (id) => {
     await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
@@ -51,7 +62,11 @@ function App() {
       <div className="buttonContainer">
         <button onClick={handleClick}>Add a Toy</button>
       </div>
-      <ToyContainer toys={toys} onDelete={handleDelete} />
+      <ToyContainer
+        toys={toys}
+        onLike={handleLike}
+        onDelete={handleDelete}
+      />
     </>
   );
 }
