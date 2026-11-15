@@ -34,6 +34,12 @@ function App() {
     setToys((toys) => [...toys, newToy]);
   };
 
+  // Delete ("donate") a toy via DELETE, then remove it from state.
+  const handleDelete = async (id) => {
+    await fetch(`${BASE_URL}/${id}`, { method: "DELETE" });
+    setToys((toys) => toys.filter((toy) => toy.id !== id));
+  };
+
   function handleClick() {
     setShowForm((showForm) => !showForm);
   }
@@ -45,7 +51,7 @@ function App() {
       <div className="buttonContainer">
         <button onClick={handleClick}>Add a Toy</button>
       </div>
-      <ToyContainer toys={toys} />
+      <ToyContainer toys={toys} onDelete={handleDelete} />
     </>
   );
 }
